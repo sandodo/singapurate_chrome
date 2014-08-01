@@ -1,0 +1,27 @@
+{
+  "background": {
+    "page": "background.html"
+  },
+   
+  "manifest_version": 2,
+
+  "name": "SingapuRate Website Filtering Service",
+  "description": "Automatically blocks websites non-suitable for your age, referring to database of singapurate.com.
+Your personalized preferences on the raings of each websites will be retained if your choices are more restricted than their aggregated ratings.",
+  "version": "1.0.2",
+  "default_locale": "en",
+
+  "browser_action": {
+    "default_icon": "skin/icon19.png",
+    "default_popup": "popup.html"
+  },
+  
+  "icons": {
+    "16": "skin/logo16.png",
+    "19": "skin/icon19.png"
+  },
+  
+  "permissions": [
+    "tabs", "storage", "webRequest", "http://*.singapurate.com/*", "http://singapurate.com/*"
+  ]
+}
