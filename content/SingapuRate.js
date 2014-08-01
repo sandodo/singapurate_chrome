@@ -33,9 +33,21 @@ var XULSingapuRateChrome =
             if(sUrlAddress == "")
             	return;
 
-			if(sUrlAddress.indexOf("chrome-extension:") == 0
-					|| sUrlAddress.indexOf("chrome:") == 0
-					|| sUrlAddress.indexOf("about:") == 0 )
+            var sUrlAddressLowerCase = sUrlAddress.toLowerCase();	
+			if(sUrlAddressLowerCase.indexOf("chrome://extensions") == 0)
+			{
+				//let us check whether we should apply super safe mode
+				if( localStorage[ SingapuRateUtilities.SingapuRatePrefKeySuperSafeMode ] == "yes" )
+				{
+		        	chrome.tabs.update(aTab.id, {
+                    	url: SingapuRateSuperSafePage
+                   	});
+				}
+				return;
+			}            	
+			else if(sUrlAddressLowerCase.indexOf("chrome-extension:") == 0
+					|| sUrlAddressLowerCase.indexOf("chrome:") == 0
+					|| sUrlAddressLowerCase.indexOf("about:") == 0 )
 			{
 				//this is a local url internal to firefox.
 				if(sUrlAddress.indexOf(SingapuRateUtilities.SingapuRateLocalBlockedHtml) != -1)
@@ -140,7 +152,7 @@ var XULSingapuRateChrome =
 							
 				}
 				//this is a local url internal to firefox.
-				else if(sUrlAddress.indexOf(SingapuRateUtilities.SingapuRateLocalSuspendedHtml) != -1)
+				else if(sUrlAddressLowerCase.indexOf(SingapuRateUtilities.SingapuRateLocalSuspendedHtml) != -1)
 				{
 					//now update the variables in the blocked html
 					var resArray = sUrlAddress.split( SingapuRateUtilities.SingapuRateParamNameUrl + "=");
@@ -259,4 +271,4 @@ window.setInterval(function() {
   chrome.tabs.getSelected(null,function(tab){
 	XULSingapuRateChrome.SingapuRateMain(tab);  
   });
-},1000);
+},500);

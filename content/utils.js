@@ -15,6 +15,7 @@ var SingapuRateUtilities =
 	SingapuRatePrefKeyBirthday: "birthday",
 	SingapuRatePrefKeyAuthenticate: "authenticate",
 	SingapuRatePrefKeyAthentCode: "authCode",
+	SingapuRatePrefKeySuperSafeMode: "superSafeMode",	
 	SingapuRatePrefKeyNumCaches: "numCaches",
 	SingapuRateMaxNumCaches: 200,
 	SingapuRateNumCachesMoveBack: 10,
@@ -22,6 +23,7 @@ var SingapuRateUtilities =
 	SingapuRateLocalBlockedHtml: "blocked.html",
 	SingapuRateLocalBlockedDefaultHtml: "default.html",
 	SingapuRateLocalSuspendedHtml: "suspended.html",
+	SingapuRateLocalSuperSafeHtml: "superSafe.html",
 
 	SingapuRateParamNameUrl: "wrs_url",
 	SingapuRateParamNameCategoryName: "wrs_cn",
@@ -432,12 +434,13 @@ var SingapuRatePrefs =
 		return false;
     },
 	
-    storePrefs: function(bLogin, sAcctName, sBirthday, sPassword)
+    storePrefs: function(bLogin, sAcctName, sBirthday, sPassword, sSuperSafe)
     {
 	    var strKeyAuthenticate = SingapuRateUtilities.SingapuRatePrefKeyAuthenticate;
 	    var strKeyAcctName = SingapuRateUtilities.SingapuRatePrefKeyAcctName;
 	    var strKeyBirthday = SingapuRateUtilities.SingapuRatePrefKeyBirthday;
 	    var strKeyAuthentCode = SingapuRateUtilities.SingapuRatePrefKeyAthentCode;
+	    var strKeySuperSafeMode = SingapuRateUtilities.SingapuRatePrefKeySuperSafeMode;
 	    
         try
         {
@@ -456,6 +459,7 @@ var SingapuRatePrefs =
 	        localStorage[strKeyAcctName] = sAcctName;
 	        localStorage[strKeyBirthday] = sBirthday;
 	        localStorage[strKeyAuthentCode] = passwordEncrypted;
+	        localStorage[strKeySuperSafeMode] = sSuperSafe;
 	        
         }
         catch(e)
@@ -526,9 +530,10 @@ var SingapuRatePrefs =
     
 };
 
-var SingapuRateBlockedPage 	= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalBlockedHtml);
-var SingapuRateBlkDftPage 	= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalBlockedDefaultHtml);
-var SingapuRateSuspendPage 	= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalSuspendedHtml);
+var SingapuRateBlockedPage 		= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalBlockedHtml);
+var SingapuRateBlkDftPage 		= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalBlockedDefaultHtml);
+var SingapuRateSuspendPage 		= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalSuspendedHtml);
+var SingapuRateSuperSafePage 	= chrome.extension.getURL(SingapuRateUtilities.SingapuRateLocalSuperSafeHtml);
 
 var SingapuRateWebService = 
 {

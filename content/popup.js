@@ -19,12 +19,24 @@ document.addEventListener('DOMContentLoaded', function () {
     													+ localStorage[SingapuRateUtilities.SingapuRatePrefKeyAcctName] 
     													+ ": You are now " 
     													+ SingapuRateUtilities.getUserAge(localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday])
-    													+ " year(s) old."
+    													+ " year(s) old.";
+    if(localStorage[ SingapuRateUtilities.SingapuRatePrefKeySuperSafeMode ] == "yes" )    													
+    {
+      document.getElementById("c_supersafe").setAttribute("checked","checked");
+      document.getElementById("c_supersafe").value = "yes";
+    }
+    else
+    {
+	  document.getElementById('c_username').removeAttribute("checked");	
+      document.getElementById("c_supersafe").value = "no";
+    }
   }
   else
   {
     document.getElementById('c_username').removeAttribute("disabled");	  
     document.getElementById('b_deregister').setAttribute("disabled","disabled");	  
+    document.getElementById("c_supersafe").setAttribute("checked","checked");
+    document.getElementById("c_supersafe").value = "yes";
   }
 });
 
@@ -33,6 +45,7 @@ window.onload = function() {
     var username = document.getElementById("c_username").value.trim();
 	var password = document.getElementById("c_password").value.trim();
 	var birthday = document.getElementById("c_birthday").value.trim();
+	var supersafe = document.getElementById("c_supersafe").value.trim();
 	var bLogin = false;
 	
 	if( username.length < 4 || password.length < 4 )
@@ -74,13 +87,15 @@ window.onload = function() {
 	}
 	
 	if(birthday != localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday]
+			|| supersafe != localStorage[SingapuRateUtilities.SingapuRatePrefKeySuperSafeMode]
 			|| localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] === false 
 			|| localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] == "false" )
 	{
 		//store username
 		//store birthday
-		//store encrypted password
-		SingapuRatePrefs.storePrefs(bLogin, username, birthday, password);
+		//store password
+		//store super safe mode
+		SingapuRatePrefs.storePrefs(bLogin, username, birthday, password, supersafe);
 		
 		alert("Profile updates, you are now years old.");
 	}
@@ -133,7 +148,7 @@ window.onload = function() {
 		//store username
 		//store birthday
 		//store encrypted password
-		SingapuRatePrefs.storePrefs(false, username, birthday, "");
+		SingapuRatePrefs.storePrefs(false, username, birthday, "", "no");
 		
 		alert("Profile updates, account " + username + " has been deregistered");
 	}
@@ -146,7 +161,19 @@ window.onload = function() {
   document.getElementById("b_close").onclick = function() {
     window.close();
   };
-  
+
+  document.getElementById("c_supersafe").onclick = function() {
+	var supersafe = document.getElementById("c_supersafe").value.trim();  
+    if( supersafe == "yes" )
+    {
+	  document.getElementById("c_supersafe").value = "no";
+    }
+    else
+    {
+      document.getElementById("c_supersafe").value = "yes"; 
+    }
+  };
+    
 }
 
 
