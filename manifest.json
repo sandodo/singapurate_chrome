@@ -7,7 +7,7 @@
 
   "name": "SingapuRate Website Filtering Service",
   "description": "Blocks websites non-suitable for your age, referring to singapurate.com, thus provides you a cloud based favorites & black list.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "default_locale": "en",
 
   "browser_action": {
