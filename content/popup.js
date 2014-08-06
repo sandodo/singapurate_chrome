@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
     || localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] == "true"  )
   {
     document.getElementById("c_username").setAttribute("disabled","disabled");
-    document.getElementById("label_username").textContent = "Welcome back " 
-    													+ localStorage[SingapuRateUtilities.SingapuRatePrefKeyAcctName] 
-    													+ ": You are now " 
-    													+ SingapuRateUtilities.getUserAge(localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday])
-    													+ " year(s) old.";
+    
+    var sWelcomeMessage = chrome.i18n.getMessage("SingapuRate_welcome_local_acct", [ localStorage[SingapuRateUtilities.SingapuRatePrefKeyAcctName], 
+                                                                                     SingapuRateUtilities.getUserAge(localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday]) ]);
+    document.getElementById("label_username").textContent = sWelcomeMessage;
+    
     if(localStorage[ SingapuRateUtilities.SingapuRatePrefKeySuperSafeMode ] == "yes" )    													
     {
       document.getElementById("c_supersafe").setAttribute("checked","checked");
@@ -38,6 +38,34 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("c_supersafe").setAttribute("checked","checked");
     document.getElementById("c_supersafe").value = "yes";
   }
+
+  var strKeyCurDomainUrlIdx 	= SingapuRateUtilities.SingapuRatePrefKeyCurDomainUrlIdx;
+  var iUrlIdx = localStorage[strKeyCurDomainUrlIdx];
+  var strKeyCLVoteIdsWI = SingapuRateUtilities.SingapuRatePrefKeyCLVoteIds + iUrlIdx;
+  var iVoteId = parseInt(localStorage[strKeyCLVoteIdsWI]);
+  
+  if(iUrlIdx >= 0 && iVoteId <= 0 )
+  {
+    document.getElementById("c_divider_line").setAttribute("style","background-image:url('skin/grey_line.jpg');");	
+    
+    document.getElementById("c_vote_buttons").setAttribute("style","vertical-align: top; width: 50px;");	
+    
+    document.getElementById("b_vote_opinion").setAttribute("style","vertical-align: top; width: 50px;");	
+    document.getElementById("b_vote_opinion").setAttribute("type","image");	
+    document.getElementById("b_vote_opinion").setAttribute("src","skin/vote_opinion.png");	
+
+    document.getElementById("b_why_matters").setAttribute("style","vertical-align: top; width: 50px;");	
+    document.getElementById("b_why_matters").setAttribute("type","image");	
+    document.getElementById("b_why_matters").setAttribute("src","skin/why_matters.png");
+        
+  }
+  else
+  {
+    document.getElementById("c_vote_buttons").setAttribute("style","vertical-align: top; width: 1px;");	
+    document.getElementById("b_vote_opinion").setAttribute("style","vertical-align: top; width: 1px; height: 1px;");	
+    document.getElementById("b_why_matters").setAttribute("style","vertical-align: top; width: 1px; height: 1px;");	
+  }
+
 });
 
 window.onload = function() {
@@ -51,7 +79,7 @@ window.onload = function() {
 	if( username.length < 4 || password.length < 4 )
 	{
 	  //it is a wrong username or password
-	  alert("wrong username or password.");
+	  alert(chrome.i18n.getMessage("SingapuRate_wrong_username_or_password", [4]));
 	  return;
 	}
 	else
@@ -60,7 +88,7 @@ window.onload = function() {
 		if(resArray.length != 3)
 		{
 		  //it is a wrong birthday format
-		  alert("wrong birthday format.");
+	  	  alert(chrome.i18n.getMessage("SingapuRate_wrong_birthday"));
 		  return;
 		}
 		else
@@ -77,7 +105,7 @@ window.onload = function() {
 				else
 				{
 					//failed to authenticate
-					alert("wrong password to authenticate the profile update.");
+	  	  			alert(chrome.i18n.getMessage("SingapuRate_update_fail"));
 					return;
 				}
 			}
@@ -97,7 +125,7 @@ window.onload = function() {
 		//store super safe mode
 		SingapuRatePrefs.storePrefs(bLogin, username, birthday, password, supersafe);
 		
-		alert("Profile updates, you are now years old.");
+		alert(chrome.i18n.getMessage("SingapuRate_update_success", [ SingapuRateUtilities.getUserAge(localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday]) ]));
 	}
 			
     if(bLogin === true)
@@ -114,7 +142,8 @@ window.onload = function() {
 	if( username.length < 4 || password.length < 4 )
 	{
 	  //it is a wrong username or password
-	  alert("wrong username or password.");
+	  alert(chrome.i18n.getMessage("SingapuRate_wrong_username_or_password", [4]));
+	  
 	  return;
 	}
 	else
@@ -131,13 +160,14 @@ window.onload = function() {
 			else
 			{
 				//failed to authenticate
-				alert("wrong password to authenticate the deregister.");
+	  			alert(chrome.i18n.getMessage("SingapuRate_logout_fail", [username]));
+				
 				return;
 			}
 		}
 		else
 		{
-			alert("account has not been registered yet");
+  			alert(chrome.i18n.getMessage("SingapuRate_already_logout"));
 			return;
 		}
 	}
@@ -145,12 +175,11 @@ window.onload = function() {
 	if(localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] === true 
 			|| localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] == "true" )
 	{
+		alert(chrome.i18n.getMessage("SingapuRate_logout_success", [ username ]));
 		//store username
 		//store birthday
 		//store encrypted password
 		SingapuRatePrefs.storePrefs(false, username, birthday, "", "no");
-		
-		alert("Profile updates, account " + username + " has been deregistered");
 	}
 			
 	window.close();
@@ -173,7 +202,38 @@ window.onload = function() {
       document.getElementById("c_supersafe").value = "yes"; 
     }
   };
-    
+  
+  
+  document.getElementById("b_vote_opinion").onclick = function() {
+	
+	var voteUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName;
+  
+	var strKeyCurDomainUrlIdx 	= SingapuRateUtilities.SingapuRatePrefKeyCurDomainUrlIdx;
+	
+	var iUrlIdx = localStorage[strKeyCurDomainUrlIdx];
+
+	if(iUrlIdx >= 0)
+	{
+		var strKeyCLCtgryIdsWI 		= SingapuRateUtilities.SingapuRatePrefKeyCLCtgryIds + iUrlIdx;
+		var strKeyCLIdxToDomainsWI 	= SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + iUrlIdx;	
+	
+		var sOnlyDomainName 	= localStorage[strKeyCLIdxToDomainsWI];
+		var ctgryId 			= localStorage[strKeyCLCtgryIdsWI];
+	    voteUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName + "/posting.php?wrs_url=" + sOnlyDomainName + "&wrs_rc=" + ctgryId;
+    	
+	}
+	chrome.tabs.create( { url : voteUrl  }, function() {} ); 
+   	window.close();
+	
+  };
+
+  document.getElementById("b_why_matters").onclick = function() {
+
+	var voteUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName + "/viewtopic.php?f=12&t=1280";
+	chrome.tabs.create( { url : voteUrl  }, function() {} ); 
+    window.close();
+  };
+      
 }
 
 

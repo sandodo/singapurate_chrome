@@ -5,6 +5,7 @@
 
 var XULSingapuRateChrome = 
 {
+	
     init: function()
     {
 	    SingapuRateUtilities.init(); 
@@ -29,6 +30,9 @@ var XULSingapuRateChrome =
 	    try
 	    {
             //get the url from urlbar
+			var strKeyCurDomainUrlIdx 	= SingapuRateUtilities.SingapuRatePrefKeyCurDomainUrlIdx;	    
+            localStorage[strKeyCurDomainUrlIdx] = -1;
+			
             var sUrlAddress = aTab.url;
             if(sUrlAddress == "")
             	return;
@@ -43,160 +47,38 @@ var XULSingapuRateChrome =
                     	url: SingapuRateSuperSafePage
                    	});
 				}
+				chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
 				return;
 			}            	
 			else if(sUrlAddressLowerCase.indexOf("chrome-extension:") == 0
 					|| sUrlAddressLowerCase.indexOf("chrome:") == 0
-					|| sUrlAddressLowerCase.indexOf("about:") == 0 )
+					|| sUrlAddressLowerCase.indexOf("about:") == 0
+					|| sUrlAddressLowerCase.indexOf("view-source:") == 0 )
 			{
-				//this is a local url internal to firefox.
-				if(sUrlAddress.indexOf(SingapuRateUtilities.SingapuRateLocalBlockedHtml) != -1)
-				{
-					//now update the variables in the blocked html
-					var resArray = sUrlAddress.split("?");
-					if(resArray.length != 2)
-					{
-						//something wrong, use default block
-				        chrome.tabs.update(aTab.id, {
-                       		url: SingapuRateBlkDftPage
-                   		});
-						
-						return;
-					}
-					var paramItems = resArray[1].split("&");
-					var minAge = 21;
-					var category = "R21";
-					var voteId = -1;
-					var ctgryId = -1;
-					var urlPath = "#";
-					for(var i = 0; i < paramItems.length; i++)
-					{
-						var paramKeyValue = paramItems[i].split("=");
-						if(paramKeyValue.length != 2)
-						{
-							continue;
-						}
-						if(paramKeyValue[0] == SingapuRateUtilities.SingapuRateParamNameUrl)
-						{
-							urlPath = paramKeyValue[1];
-						}
-						else if(paramKeyValue[0] == SingapuRateUtilities.SingapuRateParamNameCategoryName)
-						{
-							category = paramKeyValue[1];
-						}
-						else if(paramKeyValue[0] == SingapuRateUtilities.SingapuRateParamNameCategoryId)
-						{
-							ctgryId = paramKeyValue[1];
-						}
-						else if(paramKeyValue[0] == SingapuRateUtilities.SingapuRateParamNameVoteId)
-						{
-							voteId = paramKeyValue[1];
-						}
-						else if(paramKeyValue[0] == SingapuRateUtilities.SingapuRateParamNameMinAge)
-						{
-							minAge = paramKeyValue[1];
-						}
-					}
-					document.getElementById("srWebsiteDomain").textContent = urlPath;
-					document.getElementById("srWebsiteRating").textContent = category;
-		
-					var sVoteOrViewSite = "";
-					var sVoteOpinionUrl = "";
-					var sWebsiteRatingDescr = "";
-					    
-					if(category == "G")
-					{
-						sWebsiteRatingDescr = "SingapuRate.RatingGMsg";
-					}
-					else if(category == "PG")
-					{
-						sWebsiteRatingDescr = "SingapuRate.RatingPGMsg";
-					}
-				    else if(category == "PG13")
-				    {
-					    sWebsiteRatingDescr = "SingapuRate.RatingPG13Msg";
-				    }
-				    else if(category == "NC16")
-				    {
-					    sWebsiteRatingDescr = "SingapuRate.RatingNC16Msg";
-				    }
-				    else if(category == "M18")
-				    {
-					    sWebsiteRatingDescr = "SingapuRate.RatingM18Msg";
-				    }
-				    else if(category == "R21")
-				    {
-					    sWebsiteRatingDescr = "SingapuRate.RatingR21Msg";
-				    }
-				    else if(category == "BL")
-				    {
-					    sWebsiteRatingDescr = "SingapuRate.RatingBLMsg";
-				    }
-		
-				    //check by vote id				    
-					if(voteId > 0)
-					{
-						sVoteOpinionUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName + "/viewdetails.php?p=" + voteId + "#p" + voteId;
-		    			sVoteOrViewSite = "SingapuRate.checkYourVoteText";
-					}
-					else
-					{
-						sVoteOpinionUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName + "/posting.php?" + SingapuRateUtilities.SingapuRateParamNameUrl + "=" + urlPath;
-						if(ctgryId > 0)
-							sVoteOpinionUrl = sVoteOpinionUrl + "&" + SingapuRateUtilities.SingapuRateParamNameCategoryId + "=" + ctgryId;
-			    		sVoteOrViewSite = "SingapuRate.voteYourOpinionText";
-					}
-					document.getElementById("srVoteOpinionLink").setAttribute("href", sVoteOpinionUrl);
-					document.getElementById("srVoteOrViewSite").textContent = sVoteOrViewSite;
-					document.getElementById("srWebsiteRatingDescr").textContent = sWebsiteRatingDescr;
-							
-				}
-				//this is a local url internal to firefox.
-				else if(sUrlAddressLowerCase.indexOf(SingapuRateUtilities.SingapuRateLocalSuspendedHtml) != -1)
-				{
-					//now update the variables in the blocked html
-					var resArray = sUrlAddress.split( SingapuRateUtilities.SingapuRateParamNameUrl + "=");
-					if(resArray.length != 2)
-					{
-						//something wrong, use default block
-				        chrome.tabs.update(aTab.id, {
-                       		url: SingapuRateBlkDftPage
-                   		});
-						return;
-					}
-					var urlPath = resArray[1];
-						
-					if( urlPath.indexOf("http:") == -1
-						&& urlPath.indexOf("https:") == -1
-						&& urlPath.indexOf("ftp:") == -1
-						&& urlPath.indexOf("ftps:") == -1)
-					{
-						urlPath = "http://" + urlPath;
-					}
-							
-					document.getElementById("srWebsiteDomain").textContent = urlPath;
-					document.getElementById("srVoteOpinionLink").setAttribute("href", urlPath);
-						
-				}
-					
+				chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
 				return;
 			}
 					
 			if( SingapuRateUtilities.isSingapurateDomain(sUrlAddress) === true )
 			{
 				//certified singapurate urls always
+				chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
 				return;
 			}
 					            
 	    	var sOnlyDomainName = SingapuRateUtilities.getOnlyDomainName(sUrlAddress, SingapuRateUtilities.SingapuRateDomainCheckDepth);
             if(sOnlyDomainName == "")
+            {
+				chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
             	return;
-	            	
+        	}
+            	    	
 			var minAge = 21;
 			var category = "R21";
 			var voteId = -1;
 			var ctgryId = -1;
 			var retResults = SingapuRateWebsiteRatings.isBlockedInCache(sOnlyDomainName);
+			localStorage[strKeyCurDomainUrlIdx] = retResults[strKeyCurDomainUrlIdx];
 			if(retResults[SingapuRateUtilities.SingapuRateParamNameSiteBlocked] === false)
 			{
 				//allow the site
@@ -207,10 +89,14 @@ var XULSingapuRateChrome =
 					ctgryId 		= retResults[SingapuRateUtilities.SingapuRateParamNameCategoryId];
 					voteId			= retResults[SingapuRateUtilities.SingapuRateParamNameVoteId];
 					minAge			= retResults[SingapuRateUtilities.SingapuRateParamNameMinAge];
+					
+					//set page action
+					chrome.browserAction.setIcon({path: "skin/Rating_" + category + ".png"}, function() {});
 				}
 				else
 				{
 					//allowed because not in cache, now send web service request
+					chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
 					XULSingapuRateChrome.checkLocation(aTab, sOnlyDomainName);
 				}
 				return;
@@ -269,6 +155,6 @@ window.addEventListener("load",function(){
 
 window.setInterval(function() {
   chrome.tabs.getSelected(null,function(tab){
-	XULSingapuRateChrome.SingapuRateMain(tab);  
+	XULSingapuRateChrome.SingapuRateMain(tab);
   });
 },500);
