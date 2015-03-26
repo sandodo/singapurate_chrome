@@ -31,6 +31,7 @@ var SingapuRateUtilities =
 	SingapuRateParamNameVoteId: "wrs_vi",
 	SingapuRateParamNameMinAge: "wrs_minAge",
 	SingapuRateParamNameSiteBlocked: "wrs_sb",
+	SingapuRateParamNameNeedToQueryAgain: "wrs_ntqa",
 	
 	SingapuRatePrefKeyCurDomainUrlIdx: "curDomainUrlIdx",
 	
@@ -45,6 +46,7 @@ var SingapuRateUtilities =
 	SingapuRatePrefKeyCLEntryDates: "CLEntryDates",
 	SingapuRatePrefKeyCLVoteIds: "CLVoteIds",
 	SingapuRatePrefKeyCLUsrMinAges: "CLUsrMinAges",
+	SingapuRatePrefKeyCLLastActionTime: "CLLastActionTime",
 		
     init: function()
     {
@@ -891,6 +893,7 @@ var SingapuRateWebsiteRatings =
 	    var strKeyVoteId 		= SingapuRateUtilities.SingapuRateParamNameVoteId;
 	    var strKeyCategoryId 	= SingapuRateUtilities.SingapuRateParamNameCategoryId;
 	    var strKeyBlocked 		= SingapuRateUtilities.SingapuRateParamNameSiteBlocked;
+	    var strKeyQueryAgain    = SingapuRateUtilities.SingapuRateParamNameNeedToQueryAgain;
 	    
 		var strKeyCacheList 		= SingapuRateUtilities.SingapuRatePrefKeyCacheList;	    
 		var strKeyCurDomainUrlIdx 	= SingapuRateUtilities.SingapuRatePrefKeyCurDomainUrlIdx;	    
@@ -902,6 +905,7 @@ var SingapuRateWebsiteRatings =
 	    retResults[strKeyVoteId] = -1;
 	    retResults[strKeyCategoryId] = -1;
 	    retResults[strKeyCurDomainUrlIdx] = -1;
+	    retResults[strKeyQueryAgain] = false;
 	    
 	    if(!weburl || weburl.length == 0)
 	    	return retResults;
@@ -923,7 +927,6 @@ var SingapuRateWebsiteRatings =
 		    		|| localStorage[SingapuRateUtilities.SingapuRatePrefKeyAuthenticate] === false )
 		    {
 			    //donot allow access websites
-			    retResults[strKeyBlocked] = true;
 			    return retResults;
 		    }
 			else
@@ -940,6 +943,7 @@ var SingapuRateWebsiteRatings =
 			    		&& localStorage[strKeyCacheList] !== true)
 				{
 					//nothing in cache
+					retResults[strKeyQueryAgain] = true;
 				}
 				else
 				{
@@ -982,19 +986,18 @@ var SingapuRateWebsiteRatings =
 						var category 		= localStorage[strKeyCLCategoriesWI];
 						var ctgryId 		= parseInt(localStorage[strKeyCLCtgryIdsWI]);
 						var voteId			= parseInt(localStorage[strKeyCLVoteIdsWI]);
-						
-						if( iIntegerFiveDaysAgo >= entryDate )
-						{
-							//expired, allow to access;
-							return retResults;
-						}	
-						
+
 						retResults[strKeyMinAge] 		= minAge;
 						retResults[strKeyCategoryName] 	= category;
 						retResults[strKeyVoteId] 		= voteId;
 						retResults[strKeyCategoryId] 	= ctgryId;
-											
 					    retResults[strKeyCurDomainUrlIdx] = iUrlIdx;
+												
+						if( iIntegerFiveDaysAgo >= entryDate )
+						{
+							//expired, allow to access;
+							retResults[strKeyQueryAgain] = true;
+						}
 
 						//entry still valid
 						if(minAge <= SingapuRateUtilities.getUserAge(localStorage[SingapuRateUtilities.SingapuRatePrefKeyBirthday]))
@@ -1020,7 +1023,7 @@ var SingapuRateWebsiteRatings =
 			//caught an exception, do nothing
 		}
 		//default is to allow if not in cache
-		
+		retResults[strKeyQueryAgain] = true;
         return retResults;
     },  
     

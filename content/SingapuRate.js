@@ -97,9 +97,7 @@ var XULSingapuRateChrome =
 				{
 					//allowed because not in cache, now send web service request
 					chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
-					XULSingapuRateChrome.checkLocation(aTab, sOnlyDomainName);
 				}
-				return;
 			}
 			else
 			{
@@ -121,8 +119,6 @@ var XULSingapuRateChrome =
 			        chrome.tabs.update(aTab.id, {
                       		url: blockURL
                		});
-						
-					return;
 				}
 				else
 				{
@@ -130,7 +126,20 @@ var XULSingapuRateChrome =
 			        chrome.tabs.update(aTab.id, {
                    		url: SingapuRateBlkDftPage
                		});
-               		return;
+				}
+			}
+			if(retResults[SingapuRateUtilities.SingapuRateParamNameNeedToQueryAgain] === true)
+			{
+				var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + retResults[strKeyCurDomainUrlIdx];
+				//need to query sopa service to update the website information
+				if( localStorage[strKeyCLLastActionTimeWI] > (Date.now() / 1000 - 600) )
+				{
+					//As it is still less than 10 minutes interval, donot query soap service for now.
+				}
+				else
+				{
+					localStorage[strKeyCLLastActionTimeWI] = Date.now() / 1000;
+					XULSingapuRateChrome.checkLocation(aTab, sOnlyDomainName);
 				}
 			}
         }
@@ -138,6 +147,7 @@ var XULSingapuRateChrome =
         {
 	        //caught an exception
         }
+        
 		return;
     },
     
