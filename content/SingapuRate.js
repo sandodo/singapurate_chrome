@@ -130,6 +130,7 @@ var XULSingapuRateChrome =
 			}
 			if(retResults[SingapuRateUtilities.SingapuRateParamNameNeedToQueryAgain] === true)
 			{
+				//check whether website url is same as well
 				var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + retResults[strKeyCurDomainUrlIdx];
 				var strKeyCLIdxToDomainsWI = SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + retResults[strKeyCurDomainUrlIdx];
 				//need to query soap service to update the website information
