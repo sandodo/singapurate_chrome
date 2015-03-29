@@ -275,6 +275,9 @@ var SingapuRatePrefs =
 		    //User Min Ages
 		    var strKeyCLUsrMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLUsrMinAges + lCntr;
 		    localStorage[strKeyCLUsrMinAgesWI] = "-1";
+		    //Last Action Time
+			var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + lCntr;
+			localStorage[strKeyCLLastActionTimeWI] = "0";
 
 		    //second record
 		    lCntr = "1";
@@ -305,6 +308,9 @@ var SingapuRatePrefs =
 		    //User Min Ages
 		    var strKeyCLUsrMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLUsrMinAges + lCntr;
 		    localStorage[strKeyCLUsrMinAgesWI] = "-1";
+		    //Last Action Time
+			var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + lCntr;
+			localStorage[strKeyCLLastActionTimeWI] = "0";
 
 		    //third record
 		    lCntr = "2";
@@ -335,6 +341,9 @@ var SingapuRatePrefs =
 		    //User Min Ages
 		    var strKeyCLUsrMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLUsrMinAges + lCntr;
 		    localStorage[strKeyCLUsrMinAgesWI] = "-1";
+		    //Last Action Time
+			var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + lCntr;
+			localStorage[strKeyCLLastActionTimeWI] = "0";
 		    		    		    
 		    //forth record
 		    lCntr = "3";
@@ -365,6 +374,43 @@ var SingapuRatePrefs =
 		    //User Min Ages
 		    var strKeyCLUsrMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLUsrMinAges + lCntr;
 		    localStorage[strKeyCLUsrMinAgesWI] = "-1";
+		    //Last Action Time
+			var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + lCntr;
+			localStorage[strKeyCLLastActionTimeWI] = "0";
+		    
+		    //error record
+		    var lCntr = "-1";
+		    //Pref Key
+		    var strKeyCLPrefKeyWI = SingapuRateUtilities.SingapuRatePrefKeyCLPrefKey + lCntr;
+		    localStorage[strKeyCLPrefKeyWI] = "*";
+		    //Domains
+		    var strKeyCLDomainsWI = SingapuRateUtilities.SingapuRatePrefKeyCLDomains + lCntr;
+		    localStorage[strKeyCLDomainsWI] = lCntr;
+		    //Idx
+		    var strKeyCLIdxToDomainsWI = SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + lCntr;
+		    localStorage[strKeyCLIdxToDomainsWI] = "UNKNOW";
+		    //Ratings
+		    var strKeyCLCategoriesWI = SingapuRateUtilities.SingapuRatePrefKeyCLCategories + lCntr;
+		    localStorage[strKeyCLCategoriesWI] = "G";
+		    //Category Ids
+		    var strKeyCLCtgryIdsWI = SingapuRateUtilities.SingapuRatePrefKeyCLCtgryIds + lCntr;
+		    localStorage[strKeyCLCtgryIdsWI] = "1";
+		    //Category Ids
+		    var strKeyCLMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLMinAges + lCntr;
+		    localStorage[strKeyCLMinAgesWI] = "0";
+		    //Entry Date
+		    var strKeyCLEntryDatesWI = SingapuRateUtilities.SingapuRatePrefKeyCLEntryDates + lCntr;
+		    localStorage[strKeyCLEntryDatesWI] = "20140625";
+		    //Vote Ids
+		    var strKeyCLVoteIdsWI = SingapuRateUtilities.SingapuRatePrefKeyCLVoteIds + lCntr;
+		    localStorage[strKeyCLVoteIdsWI] = "-1";
+		    //User Min Ages
+		    var strKeyCLUsrMinAgesWI = SingapuRateUtilities.SingapuRatePrefKeyCLUsrMinAges + lCntr;
+		    localStorage[strKeyCLUsrMinAgesWI] = "-1";
+		    //Last Action Time
+			var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + lCntr;
+			localStorage[strKeyCLLastActionTimeWI] = "0";
+		    
 	    }
 	    
 	    SingapuRatePrefs.readPrefs();
