@@ -104,21 +104,36 @@ var XULSingapuRateChrome =
 				//block the site
 				if( retResults[SingapuRateUtilities.SingapuRateParamNameCategoryId] > 0 )
 				{
-					//found the cache
-					category 		= retResults[SingapuRateUtilities.SingapuRateParamNameCategoryName];
-					ctgryId 		= retResults[SingapuRateUtilities.SingapuRateParamNameCategoryId];
-					voteId			= retResults[SingapuRateUtilities.SingapuRateParamNameVoteId];
-					minAge			= retResults[SingapuRateUtilities.SingapuRateParamNameMinAge];
-						
-					//display another page?
-					var blockURL = SingapuRateBlockedPage + "?" + SingapuRateUtilities.SingapuRateParamNameUrl + "=" + sOnlyDomainName 
-										+ "&" + SingapuRateUtilities.SingapuRateParamNameCategoryName + "=" + category 
-										+ "&" + SingapuRateUtilities.SingapuRateParamNameCategoryId + "=" + ctgryId
-										+ "&" + SingapuRateUtilities.SingapuRateParamNameVoteId + "=" + voteId
-										+ "&" + SingapuRateUtilities.SingapuRateParamNameMinAge + "=" + minAge;
-			        chrome.tabs.update(aTab.id, {
-                      		url: blockURL
-               		});
+					//check whether website url is same as well
+					var strKeyCLLastActionTimeWI = SingapuRateUtilities.SingapuRatePrefKeyCLLastActionTime + retResults[strKeyCurDomainUrlIdx];
+					var strKeyCLIdxToDomainsWI = SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + retResults[strKeyCurDomainUrlIdx];
+					//need to query soap service to update the website information
+					if( retResults[SingapuRateUtilities.SingapuRateParamNameNeedToQueryAgain] === true 
+							&& (localStorage[strKeyCLIdxToDomainsWI] != sOnlyDomainName 
+									|| typeof localStorage[strKeyCLLastActionTimeWI] === 'undefined'
+									|| parseInt(localStorage[strKeyCLLastActionTimeWI]) < (Date.now() / 1000 - 30)) )
+					{
+						//let is display 30 seconds to wait for query
+						chrome.browserAction.setIcon({path: "skin/icon19.png"}, function() {});
+					}
+					else
+					{
+						//found the cache
+						category 		= retResults[SingapuRateUtilities.SingapuRateParamNameCategoryName];
+						ctgryId 		= retResults[SingapuRateUtilities.SingapuRateParamNameCategoryId];
+						voteId			= retResults[SingapuRateUtilities.SingapuRateParamNameVoteId];
+						minAge			= retResults[SingapuRateUtilities.SingapuRateParamNameMinAge];
+							
+						//display another page?
+						var blockURL = SingapuRateBlockedPage + "?" + SingapuRateUtilities.SingapuRateParamNameUrl + "=" + sOnlyDomainName 
+											+ "&" + SingapuRateUtilities.SingapuRateParamNameCategoryName + "=" + category 
+											+ "&" + SingapuRateUtilities.SingapuRateParamNameCategoryId + "=" + ctgryId
+											+ "&" + SingapuRateUtilities.SingapuRateParamNameVoteId + "=" + voteId
+											+ "&" + SingapuRateUtilities.SingapuRateParamNameMinAge + "=" + minAge;
+				        chrome.tabs.update(aTab.id, {
+	                      		url: blockURL
+	               		});
+               		}
 				}
 				else
 				{
@@ -136,9 +151,9 @@ var XULSingapuRateChrome =
 				//need to query soap service to update the website information
 				if( localStorage[strKeyCLIdxToDomainsWI] != sOnlyDomainName 
 							|| typeof localStorage[strKeyCLLastActionTimeWI] === 'undefined'
-							|| parseInt(localStorage[strKeyCLLastActionTimeWI]) < (Date.now() / 1000 - 600) )
+							|| parseInt(localStorage[strKeyCLLastActionTimeWI]) < (Date.now() / 1000 - 60) )
 				{
-					//As it is more than 10 minutes interval, or url domain name changed, query soap service for now.
+					//As it is more than 1 minutes interval, or url domain name changed, query soap service for now.
 					localStorage[strKeyCLLastActionTimeWI] = Date.now() / 1000;
 					localStorage[strKeyCLIdxToDomainsWI] = sOnlyDomainName;
 					XULSingapuRateChrome.checkLocation(aTab, sOnlyDomainName);
