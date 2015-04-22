@@ -135,6 +135,7 @@ var XULSingapuRateChrome =
 				var strKeyCLIdxToDomainsWI = SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + retResults[strKeyCurDomainUrlIdx];
 				//need to query soap service to update the website information
 				if( localStorage[strKeyCLIdxToDomainsWI] != sOnlyDomainName 
+							|| typeof localStorage[strKeyCLLastActionTimeWI] === 'undefined'
 							|| parseInt(localStorage[strKeyCLLastActionTimeWI]) < (Date.now() / 1000 - 600) )
 				{
 					//As it is more than 10 minutes interval, or url domain name changed, query soap service for now.
