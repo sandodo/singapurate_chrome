@@ -216,11 +216,24 @@ window.onload = function() {
 	{
 		var strKeyCLCtgryIdsWI 		= SingapuRateUtilities.SingapuRatePrefKeyCLCtgryIds + iUrlIdx;
 		var strKeyCLIdxToDomainsWI 	= SingapuRateUtilities.SingapuRatePrefKeyCLIdxToDomains + iUrlIdx;	
-	
+		var strKeyCLEntryDatesWI    = SingapuRateUtilities.SingapuRatePrefKeyCLEntryDates + iUrlIdx;
+
+		//set the date to expire that js will refresh its ratings
+		var fiveDaysAgo = new Date();
+		fiveDaysAgo.setDate( fiveDaysAgo.getDate() - 5 );
+		var l_iFiveDaysAgoY = fiveDaysAgo.getFullYear();
+		var l_iFiveDaysAgoM = (fiveDaysAgo.getMonth() + 1);
+		var l_iFiveDaysAgoD = (fiveDaysAgo.getDate());
+		var iIntegerFiveDaysAgo = l_iFiveDaysAgoD + l_iFiveDaysAgoM * 100 + l_iFiveDaysAgoY * 10000;
+		localStorage[strKeyCLEntryDatesWI] = "" + iIntegerFiveDaysAgo;
+			
 		var sOnlyDomainName 	= localStorage[strKeyCLIdxToDomainsWI];
 		var ctgryId 			= localStorage[strKeyCLCtgryIdsWI];
 	    voteUrl = "http://" + SingapuRateUtilities.SingapuRateDomainName + "/posting.php?wrs_url=" + sOnlyDomainName + "&wrs_rc=" + ctgryId;
-    	
+	}
+	else
+	{
+		//this url is not in local cache yet
 	}
 	chrome.tabs.create( { url : voteUrl  }, function() {} ); 
    	window.close();
