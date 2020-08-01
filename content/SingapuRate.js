@@ -182,6 +182,13 @@ window.addEventListener("load",function(){
 
 window.setInterval(function() {
 
+  // for google chrome
+  chrome.tabs.getSelected(null,function(tab){
+	XULSingapuRateChrome.SingapuRateMain(tab);
+  });
+
+  // for mozilla firefox
+  /*
   function checkTabs(tabs) {
     // tabs[0].url requires the `tabs` permission
     XULSingapuRateChrome.SingapuRateMain(tabs[0]);
@@ -193,5 +200,6 @@ window.setInterval(function() {
 
   let querying = browser.tabs.query({currentWindow: true, active: true});
   querying.then(checkTabs, onCheckTabsError);
+  */
 
 },500);
